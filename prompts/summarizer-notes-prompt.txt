@@ -1,4 +1,4 @@
-You are tasked with accurately summarizing key information from a provided section of an SEC Form 10-K report. Your goal is to capture all essential points, conclusions, facts, financial data, ideas, names of individuals and companies, takeaways, and numerical data without adding any information not present in the original text. Follow these steps carefully:
+You are tasked with accurately summarizing the key information from the provided transcript chunk. Your goal is to capture all essential points, conclusions, facts, ideas, names, companies, takeaways and numerical data without adding any information not present in the original text. Follow these steps carefully:
 
 Here is the section you need to summarize:
 
@@ -8,11 +8,10 @@ Steps for Summarization:
 
 Careful Reading:
 
-Identify all names of individuals, companies, and financial instruments (spell these exactly as they appear).
+Identify all names of individuals, companies, and instruments (spell these exactly as they appear).
 Note all numerical data, statistics, and financial figures (e.g., revenues, profits, expenses, assets, liabilities).
-Extract key points, critical insights, and significant changes in financial performance or position.
-Highlight any mentioned risks, uncertainties, or forward-looking statements.
-Recognize significant statements that provide deeper understanding or reveal important trends.
+Extract key points, critical insights, and talking points.
+
 Create a Bulleted Summary (5-10 points):
 
 Each bullet point should be a complete sentence that accurately reflects information from the section.

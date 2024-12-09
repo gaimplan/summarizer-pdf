@@ -5,11 +5,12 @@ __pycache__/
 archive/
 *.DS_Store
 .DS_Store
-logs
 
 .env
 
 logs/*
+output/*
+input/*
 
 .vscode
 

@@ -20,7 +20,6 @@ load_dotenv()
 # Initialize OpenAI clients
 client1 = OpenAI(base_url='http://localhost:11434/v1', api_key='ollama')
 client2 = OpenAI(base_url='http://localhost:11434/v1', api_key='ollama')
-client3 = OpenAI(base_url='http://localhost:11434/v1', api_key='ollama')
 
 def open_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as infile:
@@ -38,11 +37,27 @@ def save_json_file(filepath, content):
     with open(filepath, 'w', encoding='utf-8') as outfile:
         json.dump(content, outfile, indent=2)
 
+def gpt_prompt1(prompt, max_retries=3, retry_delay=5):
+    for attempt in range(max_retries):
+        try:
+            response = client1.chat.completions.create(
+                model="gemma2:9b-instruct-q8_0",
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return response.choices[0].message.content.strip()
+        except RateLimitError as e:
+            if attempt < max_retries - 1:
+                print(f"Rate limit reached. Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+            else:
+                print(f"Max retries reached. Error: {e}")
+                return None
+
 def gpt_prompt2(prompt, max_retries=3, retry_delay=5):
     for attempt in range(max_retries):
         try:
             response = client1.chat.completions.create(
-                model="gemma2:9b-instruct-fp16",
+                model="gemma2:latest",
                 messages=[{"role": "user", "content": prompt}]
             )
             return response.choices[0].message.content.strip()
@@ -70,21 +85,6 @@ def gpt_prompt3(prompt, max_retries=3, retry_delay=5):
                 print(f"Max retries reached. Error: {e}")
                 return None
 
-def gpt_prompt1(prompt, max_retries=3, retry_delay=5):
-    for attempt in range(max_retries):
-        try:
-            response = client1.chat.completions.create(
-                model="gemma2:9b-instruct-fp16",
-                messages=[{"role": "user", "content": prompt}]
-            )
-            return response.choices[0].message.content.strip()
-        except RateLimitError as e:
-            if attempt < max_retries - 1:
-                print(f"Rate limit reached. Retrying in {retry_delay} seconds...")
-                time.sleep(retry_delay)
-            else:
-                print(f"Max retries reached. Error: {e}")
-                return None
 
 def quality_check(chunk, summary):
     prompt = f"""Compare the following original text and summary.

@@ -1,0 +1,11 @@
+Analyze the topic categories covered in the following notes. 
+
+<<NOTES>>
+
+Provide a list of up to 5 topic categories discussed. Format the list using * and a single space before each brief topic (5 words or less). Do not use numbers or other list formats. Use sentence case. For example:
+
+* Digital transformation initiatives
+* Customer service metrics
+* Brand reputation management
+* Communication channel effectiveness
+* Data privacy compliance

@@ -1,0 +1,18 @@
+venv*/
+
+.cache/
+__pycache__/
+archive/
+*.DS_Store
+.DS_Store
+logs
+
+.env
+
+logs/*
+
+.vscode
+
+debug.log
+# workspace
+*.code-workspace

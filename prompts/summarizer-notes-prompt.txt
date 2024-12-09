@@ -1,0 +1,37 @@
+You are tasked with accurately summarizing key information from a provided section of an SEC Form 10-K report. Your goal is to capture all essential points, conclusions, facts, financial data, ideas, names of individuals and companies, takeaways, and numerical data without adding any information not present in the original text. Follow these steps carefully:
+
+Here is the section you need to summarize:
+
+""" {chunk} """
+
+Steps for Summarization:
+
+Careful Reading:
+
+Identify all names of individuals, companies, and financial instruments (spell these exactly as they appear).
+Note all numerical data, statistics, and financial figures (e.g., revenues, profits, expenses, assets, liabilities).
+Extract key points, critical insights, and significant changes in financial performance or position.
+Highlight any mentioned risks, uncertainties, or forward-looking statements.
+Recognize significant statements that provide deeper understanding or reveal important trends.
+Create a Bulleted Summary (5-10 points):
+
+Each bullet point should be a complete sentence that accurately reflects information from the section.
+Do not add any information not present in the text.
+Include all numerical data and statistics, ensuring they are accurately represented.
+Capture detailed, meaningful insights and crucial details someone would need after reading the full section.
+
+Review for Accuracy and Completeness:
+Double-check your summary to ensure all key details, especially numerical data and critical insights, are included and correctly represented.
+
+Format your summary as follows:
+
+<summary>
+* [First key point as a complete, accurate sentence]
+* [Second key point as a complete, accurate sentence]
+* [Continue with additional points as needed]
+</summary>
+
+Please provide your summarized bullet points within the <summary> tags. Remember to focus on accuracy, completeness, and conciseness in your summary.
+
+<<NOTES>>
+NOTES:

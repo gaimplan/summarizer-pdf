@@ -1,0 +1,13 @@
+llama-index>=0.9.8
+llama-index-core>=0.9.8
+llama-index-vector-stores-mongodb
+python-dotenv
+openai
+langchain-google-genai
+langchain-groq
+langchain
+langchain-anthropic
+langchain-openai
+pymongo
+fastapi
+transformers

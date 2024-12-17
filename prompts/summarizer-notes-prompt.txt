@@ -14,10 +14,10 @@ Extract key points, critical insights, and talking points.
 
 Create a Bulleted Summary (5-10 points):
 
+Capture the nuances of this to help me understand it in a deeper way. 
 Each bullet point should be a complete sentence that accurately reflects information from the section.
 Do not add any information not present in the text.
 Include all numerical data and statistics, ensuring they are accurately represented.
-Capture detailed, meaningful insights and crucial details someone would need after reading the full section.
 
 Review for Accuracy and Completeness:
 Double-check your summary to ensure all key details, especially numerical data and critical insights, are included and correctly represented.

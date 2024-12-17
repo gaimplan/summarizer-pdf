@@ -139,11 +139,21 @@ logger = setup_logger()
 pdf_reader = PDFReader()
 documents = pdf_reader.load_data(file='./input/ai-transparency-ai-codec-technical-note.pdf')
 
-# Initialize text splitter and create chunks
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1024, chunk_overlap=40)
-# Create node parser
-node_parser = SimpleNodeParser()
-nodes = node_parser.get_nodes_from_documents(documents, text_splitter=text_splitter)
+# Initialize text splitter with improved parameters
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,  
+    chunk_overlap=60,  
+    length_function=len,
+    separators=["\n\n", "\n", " ", ""]
+)
+
+# Extract text from PDF documents
+all_text = ""
+for doc in documents:
+    all_text += doc.text + "\n\n"
+
+# Split text into chunks
+chunks = text_splitter.split_text(all_text)
 
 # Initialize results storage
 results = []
@@ -153,12 +163,11 @@ notes_prompt_template = open_file("./prompts/summarizer-notes-prompt.txt")
 fallback_prompt_template = open_file("./prompts/summarizer-notes-prompt-fallback.txt")
 
 # Process each chunk
-print("\nProcessing PDF document chunks...")
-logger.info("Processing PDF document chunks...")
+print(f"\nProcessing {len(chunks)} document chunks...")
+logger.info(f"Processing {len(chunks)} document chunks...")
 
-for chunk_idx, node in enumerate(nodes):
-    chunk_text = node.text
-    print(f"\nProcessing chunk {chunk_idx + 1}/{len(nodes)}...")
+for chunk_idx, chunk_text in enumerate(chunks):
+    print(f"\nProcessing chunk {chunk_idx + 1}/{len(chunks)}...")
     
     # Initialize chunk results
     chunk_result = {

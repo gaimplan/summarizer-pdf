@@ -1,41 +1,36 @@
 You are tasked with accurately summarizing the key information from the provided transcript chunk. Your goal is to capture all essential points, conclusions, facts, ideas, names, companies, takeaways and numerical data without adding any information not present in the original text. Follow these steps carefully:
 
-Here is the transcript chunk you need to summarize:
+Here is the section you need to summarize:
 
-Transcript chunk:
 """ {chunk} """
 
-Steps for summarization:
+Steps for Summarization:
 
-1. Read the transcript chunk carefully, identifying:
-   - All names of individuals and companies (spell these exactly as they appear)
-   - All numerical data and statistics
-   - Key points and critical insights
-   - Significant statements that provide deeper understanding or reveal important trends
+Careful Reading:
 
-2. Create 5-10 bulleted list summary where each point is a complete sentence that accurately reflects information from the transcript. Ensure that:
-   - You do not add any information not present in the chunk
-   - All numerical data and statistics are included and accurately represented
-   - Capture the detailed meaningful insights and crucial details that someone would need to know after reading the full transcript.
+Identify all names of individuals, companies, and instruments (spell these exactly as they appear).
+Note all numerical data, statistics, and financial figures (e.g., revenues, profits, expenses, assets, liabilities).
+Extract key points, critical insights, and talking points.
 
-3. Double-check your summary for accuracy and completeness, verifying that all key details, especially numerical data and critical insights, are included and correctly represented.
+Create a Bulleted Summary (5-10 points):
 
-Example output:
+Capture the nuances of this to help me understand it in a deeper way. 
+Each bullet point should be a complete sentence that accurately reflects information from the section.
+Do not add any information not present in the text.
+Include all numerical data and statistics, ensuring they are accurately represented.
+
+Review for Accuracy and Completeness:
+Double-check your summary to ensure all key details, especially numerical data and critical insights, are included and correctly represented.
+
+Format your summary as follows:
+
 <summary>
-* The person being interviewed was working on a project called co-counsel based on Jeep D4 technology with about 20 people at the time.
-* This team was taken from their original projects and redirected to work solely on building this new product within 48 hours.
-* Casex originally focused on the legal space, initially created by a lawyer who built a platform for annotated versions of case law.
-* The company's mission has always been to bring technology innovations that benefit the legal field since its early origins.
-* As a lawyer, the interviewer disliked interacting with outdated and inadequate legal technology tools.
-* In 2012, they recalled the inefficiency of searching for critical evidence in old cases, making them realize there must be a better way to access this information efficiently.
-* Before everything went online or virtual, researchers would manually read stacks and stacks of documents to find relevant emails, case law, or other important data.
-* This process was particularly time-consuming and outdated, leading the interviewer to think about more efficient ways to access legal knowledge.
-* The interviewer noted that even web-based research tools at the time were clunky and could not easily be used for finding relevant information, such as using Ctrl+F functionality.
-* Interestingly, the interviewer had computer science training that conflicted with their law practice requirements due to limited technical resources in their former firm.
-* This conflicting desire to improve technology efficiency drove them to leave their law firm and join YC (which they did not initially get into).
+* [First key point as a complete, accurate sentence]
+* [Second key point as a complete, accurate sentence]
+* [Continue with additional points as needed]
 </summary>
 
-Please provide your summarized bullet points within the <summary> tags. Remember to focus on accuracy, completeness, and conciseness in your summary.Ensure all significant points are included.
+Please provide your summarized bullet points within the <summary> tags. Remember to focus on accuracy, completeness, and conciseness in your summary.
 
 <<NOTES>>
 NOTES:

@@ -18,8 +18,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 load_dotenv()
 
 # Initialize OpenAI clients
-client1 = OpenAI(base_url='http://localhost:11434/v1', api_key='ollama')
-client2 = OpenAI(base_url='http://localhost:11434/v1', api_key='ollama')
+client1 = OpenAI(base_url='http://192.168.10.3:11436/v1', api_key='ollama')
+client2 = OpenAI(base_url='http://192.168.10.3:11435/v1', api_key='ollama')
 
 def open_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as infile:
@@ -135,112 +135,132 @@ def clean_topics_output(output):
 # Main script
 logger = setup_logger()
 
-# Load PDF file
-pdf_reader = PDFReader()
-documents = pdf_reader.load_data(file='./input/ai-transparency-ai-codec-technical-note.pdf')
+# Get list of PDF files in input directory
+input_dir = './input'
+pdf_files = [f for f in os.listdir(input_dir) if f.lower().endswith('.pdf')]
 
-# Initialize text splitter with improved parameters
-text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,  
-    chunk_overlap=60,  
-    length_function=len,
-    separators=["\n\n", "\n", " ", ""]
-)
+if not pdf_files:
+    print("No PDF files found in the input directory.")
+    logger.warning("No PDF files found in the input directory.")
+    exit()
 
-# Extract text from PDF documents
-all_text = ""
-for doc in documents:
-    all_text += doc.text + "\n\n"
+# Process each PDF file
+for pdf_file in pdf_files:
+    pdf_path = os.path.join(input_dir, pdf_file)
+    print(f"\nProcessing file: {pdf_file}")
+    logger.info(f"Processing file: {pdf_file}")
 
-# Split text into chunks
-chunks = text_splitter.split_text(all_text)
+    # Get output filename
+    output_filename = os.path.splitext(pdf_file)[0] + '.json'
+    output_path = os.path.join('./output', output_filename)
 
-# Initialize results storage
-results = []
+    # Load PDF file
+    pdf_reader = PDFReader()
+    documents = pdf_reader.load_data(file=pdf_path)
 
-# Load prompt templates
-notes_prompt_template = open_file("./prompts/summarizer-notes-prompt.txt")
-fallback_prompt_template = open_file("./prompts/summarizer-notes-prompt-fallback.txt")
+    # Initialize text splitter with improved parameters
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,  
+        chunk_overlap=60,  
+        length_function=len,
+        separators=["\n\n", "\n", " ", ""]
+    )
 
-# Process each chunk
-print(f"\nProcessing {len(chunks)} document chunks...")
-logger.info(f"Processing {len(chunks)} document chunks...")
+    # Extract text from PDF documents
+    all_text = ""
+    for doc in documents:
+        all_text += doc.text + "\n\n"
 
-for chunk_idx, chunk_text in enumerate(chunks):
-    print(f"\nProcessing chunk {chunk_idx + 1}/{len(chunks)}...")
-    
-    # Initialize chunk results
-    chunk_result = {
-        "chunk_id": chunk_idx,
-        "chunk_text": chunk_text,
-        "notes": None,
-        "topics": None,
-        "relevancy_percentage": 0
-    }
-    
-    # Process notes for the chunk
-    attempt = 0
-    max_attempts = 30
-    relevancy_threshold = 90.0
-    
-    while attempt < max_attempts:
-        attempt += 1
+    # Split text into chunks
+    chunks = text_splitter.split_text(all_text)
+
+    # Initialize results storage
+    results = []
+
+    # Load prompt templates
+    notes_prompt_template = open_file("./prompts/summarizer-notes-prompt.txt")
+    fallback_prompt_template = open_file("./prompts/summarizer-notes-prompt-fallback.txt")
+
+    # Process each chunk
+    print(f"\nProcessing {len(chunks)} document chunks...")
+    logger.info(f"Processing {len(chunks)} document chunks for {pdf_file}")
+
+    for chunk_idx, chunk_text in enumerate(chunks):
+        print(f"\nProcessing chunk {chunk_idx + 1}/{len(chunks)}...")
         
-        # Adjust relevancy threshold after 5 attempts
-        if attempt > 5:
-            relevancy_threshold = 85.0
+        # Initialize chunk results
+        chunk_result = {
+            "chunk_id": chunk_idx,
+            "filename": pdf_file,
+            "chunk_text": chunk_text,
+            "notes": None,
+            "topics": None,
+            "relevancy_percentage": 0
+        }
         
-        prompt_modified = notes_prompt_template.format(chunk=chunk_text)
-        fallback_prompt_modified = fallback_prompt_template.format(chunk=chunk_text)
+        # Process notes for the chunk
+        attempt = 0
+        max_attempts = 30
+        relevancy_threshold = 90.0
         
-        # Use different models for different attempts
-        if attempt <= 10:
-            notes = gpt_prompt1(prompt_modified)
-        elif attempt <= 20:
-            notes = gpt_prompt2(prompt_modified)
-        else:
-            notes = gpt_prompt3(prompt_modified)
+        while attempt < max_attempts:
+            attempt += 1
             
-        if notes is None:
-            print(f"Failed to get response for attempt {attempt}. Continuing to next attempt.")
-            continue
+            # Adjust relevancy threshold after 5 attempts
+            if attempt > 5:
+                relevancy_threshold = 85.0
             
-        relevancy_percentage = quality_check(chunk_text, notes)
-        print(f"Relevancy Accuracy for Notes (Attempt {attempt}): {relevancy_percentage}%")
-        
-        if relevancy_percentage >= relevancy_threshold:
-            chunk_result["notes"] = notes
-            chunk_result["relevancy_percentage"] = relevancy_percentage
-            break
-    
-    # Generate topics for the chunk
-    if chunk_result["notes"] is not None:
-        keytw_template = open_file("./prompts/summarizer-topics-prompt.txt")
-        keytw_modified = keytw_template.replace("<<NOTES>>", chunk_result["notes"])
-        
-        topic_attempt = 0
-        max_topic_attempts = 3
-        
-        while topic_attempt < max_topic_attempts:
-            if topic_attempt == 0:
-                keytw2 = gpt_prompt1(keytw_modified)
-            elif topic_attempt == 1:
-                keytw2 = gpt_prompt2(keytw_modified)
+            prompt_modified = notes_prompt_template.format(chunk=chunk_text)
+            fallback_prompt_modified = fallback_prompt_template.format(chunk=chunk_text)
+            
+            # Use different models for different attempts
+            if attempt <= 10:
+                notes = gpt_prompt1(prompt_modified)
+            elif attempt <= 20:
+                notes = gpt_prompt2(prompt_modified)
             else:
-                keytw2 = gpt_prompt3(keytw_modified)
+                notes = gpt_prompt3(prompt_modified)
                 
-            if keytw2 is not None:
-                chunk_result["topics"] = clean_topics_output(keytw2)
+            if notes is None:
+                print(f"Failed to get response for attempt {attempt}. Continuing to next attempt.")
+                continue
+                
+            relevancy_percentage = quality_check(chunk_text, notes)
+            print(f"Relevancy Accuracy for Notes (Attempt {attempt}): {relevancy_percentage}%")
+            
+            if relevancy_percentage >= relevancy_threshold:
+                chunk_result["notes"] = notes
+                chunk_result["relevancy_percentage"] = relevancy_percentage
                 break
-                
-            topic_attempt += 1
-            print(f"Failed to generate topics for chunk {chunk_idx}, attempt {topic_attempt}.")
-    
-    # Add chunk results to main results list
-    results.append(chunk_result)
-    
-    # Save intermediate results after each chunk
-    save_json_file('./output/chunk_summaries.json', results)
+        
+        # Generate topics for the chunk
+        if chunk_result["notes"] is not None:
+            keytw_template = open_file("./prompts/summarizer-topics-prompt.txt")
+            keytw_modified = keytw_template.replace("<<NOTES>>", chunk_result["notes"])
+            
+            topic_attempt = 0
+            max_topic_attempts = 3
+            
+            while topic_attempt < max_topic_attempts:
+                if topic_attempt == 0:
+                    keytw2 = gpt_prompt1(keytw_modified)
+                elif topic_attempt == 1:
+                    keytw2 = gpt_prompt2(keytw_modified)
+                else:
+                    keytw2 = gpt_prompt3(keytw_modified)
+                    
+                if keytw2 is not None:
+                    chunk_result["topics"] = clean_topics_output(keytw2)
+                    break
+                    
+                topic_attempt += 1
+                print(f"Failed to generate topics for chunk {chunk_idx}, attempt {topic_attempt}.")
+        
+        # Add chunk results to main results list
+        results.append(chunk_result)
+        
+        # Save intermediate results after each chunk
+        save_json_file(output_path, results)
 
-print("\nProcessing complete!")
-logger.info("Processing complete!")
+    print("\nProcessing complete!")
+    logger.info("Processing complete!")
